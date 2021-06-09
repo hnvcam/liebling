@@ -45,6 +45,8 @@ into the {body} of the default.hbs template --}}
                   <span class="m-heading__meta__divider" aria-hidden="true">&bull;</span>
                 {{/if}}
                 <span class="m-heading__meta__time">{{date published_at}}</span>
+                <span class="m-heading__meta__divider" aria-hidden="true">&bull;</span>
+                <span class="m-heading__meta__tag">{{reading_time minute=(t "1 min read") minutes=(t "% min read")}}</span>
               </div>
             </header>
             <div class="pos-relative js-post-content">
@@ -80,6 +82,11 @@ into the {body} of the default.hbs template --}}
                   </ul>
                 </section>
               {{/if}}
+              {{!-- comments ---}}
+              <section class="m-comments">
+                <script data-isso="https://comment.tenolife.com/" src="https://comment.tenolife.com/js/embed.min.js"></script>
+                <section id="isso-thread"></section>
+              </section>
             </div>
           </div>
         </div>

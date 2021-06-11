@@ -27,6 +27,7 @@ mix.js('js/helpers.js', 'js/')
   .js('js/home.js', 'js/')
   .js('js/post.js', 'js/')
   .js('js/page.js', 'js/')
+  .js('js/isso-comment.js', 'js/')
   .extract()
   .setResourceRoot('/assets')
   .setPublicPath('../assets')
@@ -42,7 +43,7 @@ mix.js('js/helpers.js', 'js/')
   })
   .copy('sass/fonts/icomoon/*.*', '../assets/fonts/icomoon/')
   .copyDirectory('sass/fonts/source-sans-pro/', '../assets/fonts/source-sans-pro/')
-  .copy('js/vendor/content-api.min.js', '../assets/js/vendor/')
+  .copyDirectory('js/vendor/', '../assets/js/vendor/')
   .browserSync({
     proxy: "localhost:2368",
     files: [

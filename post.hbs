@@ -6,6 +6,7 @@ This template is used for the post page.
 {{#contentFor "preload"}}
   <link rel="preload" href="{{asset "css/post.css"}}" as="style" />
   <link rel="preload" href="{{asset "js/post.js"}}" as="script" />
+  <link rel="preload" href="{{asset "js/isso-comment.js"}}" as="script" />
 {{/contentFor}}
 
 {{!-- This block loads specific styles for the post page --}}
@@ -83,10 +84,7 @@ into the {body} of the default.hbs template --}}
                 </section>
               {{/if}}
               {{!-- comments ---}}
-              <section class="m-comments">
-                <script data-isso="https://comment.tenolife.com/" src="https://comment.tenolife.com/js/embed.min.js"></script>
-                <section id="isso-thread"></section>
-              </section>
+              {{> isso-comment}}
             </div>
           </div>
         </div>
@@ -233,4 +231,23 @@ into the {body} of the default.hbs template --}}
 {{!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs --}}
 {{#contentFor "scripts"}}
   <script defer src="{{asset "js/post.js"}}"></script>
+  <script defer src="{{asset "js/isso-comment.js"}}"></script>
+  <script type="text/javascript">
+    {{#post}}
+      window.postContext = {
+        id: "{{id}}",
+        title: "{{title}}",
+        url: "{{url}}",
+        page: "{{page}}",
+        {{#if @member}}
+          member: {
+            name: {{@member.name}},
+            email: {{@member.email}}
+          }
+        {{else}}
+          member: null
+        {{/if}}
+      }
+    {{/post}}
+  </script>
 {{/contentFor}}

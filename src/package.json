@@ -28,8 +28,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "7zip": "0.0.6",
     "@tryghost/admin-api": "^1.4.0",
+    "7zip": "0.0.6",
     "browser-sync": "^2.26.14",
     "browser-sync-webpack-plugin": "^2.3.0",
     "concurrently": "^6.0.0",
@@ -52,8 +52,11 @@
     "fuse.js": "^6.4.6",
     "headroom.js": "^0.12.0",
     "jquery": "^3.6.0",
+    "lodash": "^4.17.21",
     "medium-zoom": "^1.0.6",
     "shave": "^2.5.10",
+    "simplemde": "^1.11.2",
+    "timeago.js": "^4.0.2",
     "tippy.js": "^5.2.1"
   },
   "optionalDependencies": {

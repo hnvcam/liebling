@@ -10,3 +10,30 @@
     max-width: 100%;
   }
 }
+
+// Isso comment
+.CodeMirror, .CodeMirror-scroll {
+	min-height: 100px !important;
+}
+
+ul.comment-block {
+  list-style-type:none;
+}
+
+.comment-placeholder {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.comment-avatar {
+  min-width: 64px;
+  min-height: 64px;
+}
+
+.comment-stack {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}

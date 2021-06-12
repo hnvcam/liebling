@@ -241,8 +241,8 @@ into the {body} of the default.hbs template --}}
         page: "{{page}}",
         {{#if @member}}
           member: {
-            name: {{@member.name}},
-            email: {{@member.email}}
+            name: "{{@member.name}}",
+            email: "{{@member.email}}"
           }
         {{else}}
           member: null

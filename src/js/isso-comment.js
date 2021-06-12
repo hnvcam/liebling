@@ -77,9 +77,14 @@ const deleteComment = (element, item) => {
         method: 'DELETE',
         url: host + '/id/' + _.get(item, 'id'),
         contentType: 'application/json',
-        dataType: 'json'
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        }
     }).done(() => element.remove())
 }
+
+const hasCookie = cookie => !_.isEmpty((document.cookie.match('(^|; )' + cookie + '=([^;]*)') || 0)[2])
 
 const renderComment = (element, item) => {
     const placeHolder = $('<div class="comment-placeholder"></div>')
@@ -142,7 +147,7 @@ const renderComment = (element, item) => {
         })
     }
 
-    if (_.isEqual(_.get(postContext, 'member.email'), _.get(item, 'email'))) {
+    if (hasCookie("isso-" + _.get(item, 'id'))) {
         const del = $('<a href="#" class="comment-action">Delete</a>')
         toolbar.append(del)
         del.on('click', () => {
@@ -209,8 +214,20 @@ const submitComment = (text, renderToElement, parent) => {
         url: host + '/new?uri=' + encodeURIComponent(postContext.url),
         data: JSON.stringify(payload),
         contentType: 'application/json',
-        dataType: 'json'
-    }).done(item => renderBlockComments(renderToElement, [item]))
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        }
+    })
+    .done(item => renderBlockComments(renderToElement, [item]))
+    .always((res,code,jqXHr) => storeCookies(jqXHr))
+}
+
+const storeCookies = jqXHr => {
+    const cookie1 = jqXHr.getResponseHeader('Set-Cookie')
+    const cookie2 = jqXHr.getResponseHeader('X-Set-Cookie')
+    document.cookie = cookie1
+    document.cookie = cookie2
 }
 
 const initMardownEditor = () => {

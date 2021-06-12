@@ -3,11 +3,16 @@ This template is used for the post/page.
 --}}
 
 <section class="m-comments">
-    <p><a href="#/portal/signin">Sign in</a> to add new comment</p>
-    <textarea class="comment-editor"></textarea>
-    <div style="text-align: right; padding-top: 4px;">
-      <button class="m-button primary comment-editor-submit">Submit</button>
-      <button class="m-button comment-editor-clear">Clear</button></div>
+    {{#if @member}}
+    <p>Signed in as {{@member.name}}({{@member.email}})</p>
+      <textarea class="comment-editor"></textarea>
+      <div style="text-align: right; padding-top: 4px;">
+        <button class="m-button primary comment-editor-submit">Submit</button>
+        <button class="m-button comment-editor-clear">Clear</button>
+      </div>
+    {{else}}
+      <p><a href="#/portal/signin">Sign in</a> to add new comment</p>
+    {{/if}}
     <div id="isso-comments">
     </div>
 </section>

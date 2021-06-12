@@ -3,12 +3,14 @@ import $ from 'jquery'
 import SimpleMDE from 'simplemde'
 import localeVi from 'timeago.js/lib/lang/vi'
 import {format, register} from 'timeago.js'
+import md5 from 'md5'
 import _ from 'lodash'
 
 const host = 'https://comment.tenolife.com'
-const authority = 'comment.tenolife.com'
 const postContext = window.postContext
 let simplemde = null
+let inlinemde = null
+let inlinemdeContainer = null
 
 const renderVotes = votes => {
 
@@ -22,15 +24,70 @@ const voteComment = (item, vote) => {
     return $.ajax({
         method: 'POST',
         url: host + '/id/' + itemId + '/' + vote,
+        headers: {
+            Accept: '*/*'
+        },
         contentType: 'application/json',
-        dataType: 'json',
-        authority
+        dataType: 'json'
     })
+}
+
+const removeInlineEditor = () => {
+    if (!_.isNull(inlinemde)) { 
+        inlinemde.toTextArea()
+        inlinemde = null
+    }
+    if (!_.isNull(inlinemdeContainer)) {
+        inlinemdeContainer.remove()
+        inlinemdeContainer = null
+    }
+}
+
+const renderInlineReply = (element, parent) => {
+    removeInlineEditor()
+
+    inlinemdeContainer = $('<div></div>')
+    const editorElement = $('<textarea></textarea>')
+    inlinemdeContainer.append(editorElement)
+    const submit = $('<button class="m-button primary comment-editor-submit">Submit</button>')
+    const close = $('<button class="m-button comment-editor-clear">Close</button>')
+    const toolbar = $('<div style="text-align: right; padding-top: 4px;"></div>')
+    toolbar.append(submit).append(close)
+    inlinemdeContainer.append(toolbar)
+    element.append(inlinemdeContainer)
+
+    inlinemde = new SimpleMDE({
+        element: editorElement.get(0),
+        status: false,
+        toolbar: false
+    })
+
+    submit.on('click', () => {
+        const value = inlinemde.value()
+        if (!_.isEmpty(value)) {
+            submitComment(value, element, _.get(parent, 'id'))
+            .done(() => removeInlineEditor())
+        }
+    })
+    close.on('click', () => removeInlineEditor())
+}
+
+const deleteComment = (element, item) => {
+    $.ajax({
+        method: 'DELETE',
+        url: host + '/id/' + _.get(item, 'id'),
+        contentType: 'application/json',
+        dataType: 'json'
+    }).done(() => element.remove())
 }
 
 const renderComment = (element, item) => {
     const placeHolder = $('<div class="comment-placeholder"></div>')
     const avatar = $('<div class="comment-avatar"></div>')
+    const emailHash = md5(_.toLower(_.trim(_.get(postContext, 'member.email'))))
+    avatar.append('<img src="https://www.gravatar.com/avatar/' 
+        + emailHash 
+        + '?s=64&d=identicon&r=g"/>')
     placeHolder.append(avatar)
 
     const stack = $('<div class="comment-stack"></div>')
@@ -72,16 +129,35 @@ const renderComment = (element, item) => {
     })
     toolbar.append(dislike)
     toolbar.append('<span class="comment-dislikes">' + _.get(item, 'dislikes', 0) + '</span>')
-    
-
     stack.append(toolbar)
+    const childPlaceholder = $('<div class="inline-reply"></div>')
+    stack.append(childPlaceholder)
+    
+    if (!_.isEmpty(_.get(postContext, 'member'))) {
+        const reply = $('<a href="#" class="comment-action">Reply</a>')
+        toolbar.append(reply)
+        reply.on('click', () => {
+            renderInlineReply(childPlaceholder, item)
+            return false
+        })
+    }
+
+    if (_.isEqual(_.get(postContext, 'member.email'), _.get(item, 'email'))) {
+        const del = $('<a href="#" class="comment-action">Delete</a>')
+        toolbar.append(del)
+        del.on('click', () => {
+            deleteComment(placeHolder, item)
+            return false
+        })
+    }
 
     placeHolder.append(stack)
-    
     element.append(placeHolder)
+
+    return childPlaceholder
 }
 
-const renderBlockComments = (element, items, parentMap) => {
+const renderBlockComments = (element, items) => {
     if (_.isEmpty(items)) {
         return
     }
@@ -90,15 +166,13 @@ const renderBlockComments = (element, items, parentMap) => {
     _.forEach(items, item => {
         const itemId = _.get(item, 'id')
         const li = $('<li class="comment-item"></li>')
-        renderComment(li, item)
-        
-        // find all children of this comment and render it
-        const children = _.get(parentMap, itemId)
-        renderBlockComments(li, children, parentMap)
+        const childPlaceholder = renderComment(li, item)
 
-        ul.prepend(li)
+        renderBlockComments(childPlaceholder, _.get(item, 'replies'))
+
+        ul.append(li)
     })
-    element.prepend(ul)
+    element.append(ul)
 } 
 
 const renderComments = comments => {
@@ -106,14 +180,11 @@ const renderComments = comments => {
         $('#isso-comments').append('<h3>No comments</h3>')
         return
     }
-
-    const groupedComments = _.groupBy(comments, 'parent')
-    const rootComments = _.get(groupedComments, 'null')
-    renderBlockComments($('#isso-comments').first(),rootComments, groupedComments)
+    renderBlockComments($('#isso-comments').first(), comments)
 }
 
 const loadComments = () => {
-    $.ajax(host + '/?uri=' + encodeURIComponent(postContext.url) + '&nested_limit=5')
+    $.ajax(host + '/?uri=' + encodeURIComponent(postContext.url))
     .done(data => {
         const all = _.groupBy(_.get(data, 'replies'), 'website')
         renderComments(_.get(all, 'null'))
@@ -124,12 +195,12 @@ const loadComments = () => {
     })
 }
 
-const submitComment = text => {
+const submitComment = (text, renderToElement, parent) => {
     const payload = {
         author: _.get(postContext, 'member.name'),
         email: _.get(postContext, 'member.email'),
         title: _.get(postContext, 'title'),
-        parent: null,
+        parent,
         mode: 1,
         text
     }
@@ -138,12 +209,15 @@ const submitComment = text => {
         url: host + '/new?uri=' + encodeURIComponent(postContext.url),
         data: JSON.stringify(payload),
         contentType: 'application/json',
-        dataType: 'json',
-        authority
-    }).done(item => renderBlockComments($('#isso-comments').first(), [item], {}))
+        dataType: 'json'
+    }).done(item => renderBlockComments(renderToElement, [item]))
 }
 
 const initMardownEditor = () => {
+    if (_.isNull(_.get(postContext, 'member'))) {
+        return
+    }
+
     simplemde = new SimpleMDE({
         element: $('.comment-editor').get(0),
         status: false
@@ -151,7 +225,7 @@ const initMardownEditor = () => {
     $('.comment-editor-submit').on('click', () => {
         const value = simplemde.value()
         if (!_.isEmpty(value)) {
-            submitComment(value)
+            submitComment(value, $('#isso-comments').first())
             .done(() => {
                 simplemde.value("")
             })
@@ -160,7 +234,6 @@ const initMardownEditor = () => {
     $('.comment-editor-clear').on('click', () => {
         simplemde.value("");
     })
-
 }
 
 $(() => {

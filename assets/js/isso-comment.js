@@ -1,1 +1,291 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{37:function(e,n,t){e.exports=t(38)},38:function(e,n,t){"use strict";t.r(n);t(39);var a=t(0),o=t.n(a),i=t(22),c=t.n(i),s=t(23),m=t.n(s),l=t(12),p=t(2),d=t.n(p),r="https://comment.tenolife.com",u=window.postContext,f=null,v=function(e,n){var t=d.a.get(e,"id");return d.a.isNull(t)?o.a.Deferred().resolve(e):o.a.ajax({method:"POST",url:r+"/id/"+t+"/"+n,contentType:"application/json",dataType:"json",authority:"comment.tenolife.com"})},g=function e(n,t,a){if(!d.a.isEmpty(t)){var i=o()('<ul class="comment-block"></ul>');d.a.forEach(t,(function(n){var t=d.a.get(n,"id"),c=o()('<li class="comment-item"></li>');!function(e,n){var t=o()('<div class="comment-placeholder"></div>'),a=o()('<div class="comment-avatar"></div>');t.append(a);var i=o()('<div class="comment-stack"></div>'),c=o()('<div class="comment-status"></div>'),s=d.a.get(n,"author");c.append('<span class="comment-author">'+(d.a.isEmpty(s)?"Anonymous":s)+"</span>");var m=new Date(1e3*d.a.get(n,"created"));c.append('<span class="comment-modified">'+Object(l.a)(m,document.documentElement.lang)+"</span>"),i.append(c);var p=o()('<div class="comment-content"></div>');p.append(d.a.get(n,"text")),i.append(p);var r=o()('<div class="comment-toolbar"></div>'),u=o()('<a href="#" class="comment-like icon-cool"/>');u.on("click",(function(){return v(n,"like").done((function(e){u.find(".comment-likes").html(d.a.get(e,"likes",0))})),!1})),r.append(u),r.append('<span class="comment-likes">'+d.a.get(n,"likes",0)+"</span>");var f=o()('<a href="#" class="comment-dislike icon-tongue"/>');f.on("click",(function(){return v(n,"dislike").done((function(e){u.find(".comment-dislikes").html(d.a.get(e,"dislikes",0))})),!1})),r.append(f),r.append('<span class="comment-dislikes">'+d.a.get(n,"dislikes",0)+"</span>"),i.append(r),t.append(i),e.append(t)}(c,n);var s=d.a.get(a,t);e(c,s,a),i.prepend(c)})),n.prepend(i)}},k=function(e){if(d.a.isEmpty(e))o()("#isso-comments").append("<h3>No comments</h3>");else{var n=d.a.groupBy(e,"parent"),t=d.a.get(n,"null");g(o()("#isso-comments").first(),t,n)}},h=function(){f=new c.a({element:o()(".comment-editor").get(0),status:!1}),o()(".comment-editor-submit").on("click",(function(){var e,n,t=f.value();d.a.isEmpty(t)||(e=t,n={author:d.a.get(u,"member.name"),email:d.a.get(u,"member.email"),title:d.a.get(u,"title"),parent:null,mode:1,text:e},o.a.ajax({type:"POST",url:r+"/new?uri="+encodeURIComponent(u.url),data:JSON.stringify(n),contentType:"application/json",dataType:"json",authority:"comment.tenolife.com"}).done((function(e){return g(o()("#isso-comments").first(),[e],{})}))).done((function(){f.value("")}))})),o()(".comment-editor-clear").on("click",(function(){f.value("")}))};o()((function(){Object(l.b)("vi",m.a),h(),o.a.ajax(r+"/?uri="+encodeURIComponent(u.url)+"&nested_limit=5").done((function(e){var n=d.a.groupBy(d.a.get(e,"replies"),"website");k(d.a.get(n,"null")),d.a.get(n,"tenolife")})).fail((function(){k([])}))}))},49:function(e,n){}},[[37,0,1]]]);
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/js/isso-comment"],{
+
+/***/ "./js/isso-comment.js":
+/*!****************************!*\
+  !*** ./js/isso-comment.js ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var simplemde_dist_simplemde_min_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! simplemde/dist/simplemde.min.css */ "./node_modules/simplemde/dist/simplemde.min.css");
+/* harmony import */ var simplemde_dist_simplemde_min_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(simplemde_dist_simplemde_min_css__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var simplemde__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! simplemde */ "./node_modules/simplemde/src/js/simplemde.js");
+/* harmony import */ var simplemde__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(simplemde__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var timeago_js_lib_lang_vi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! timeago.js/lib/lang/vi */ "./node_modules/timeago.js/lib/lang/vi.js");
+/* harmony import */ var timeago_js_lib_lang_vi__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(timeago_js_lib_lang_vi__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var timeago_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! timeago.js */ "./node_modules/timeago.js/esm/index.js");
+/* harmony import */ var md5__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! md5 */ "./node_modules/md5/md5.js");
+/* harmony import */ var md5__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(md5__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_6__);
+
+
+
+
+
+
+
+var host = 'https://comment.tenolife.com';
+var postContext = window.postContext;
+var simplemde = null;
+var inlinemde = null;
+var inlinemdeContainer = null;
+
+var renderVotes = function renderVotes(votes) {};
+
+var voteComment = function voteComment(item, vote) {
+  var itemId = lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'id');
+
+  if (lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isNull(itemId)) {
+    return jquery__WEBPACK_IMPORTED_MODULE_1___default.a.Deferred().resolve(item);
+  }
+
+  return jquery__WEBPACK_IMPORTED_MODULE_1___default.a.ajax({
+    method: 'POST',
+    url: host + '/id/' + itemId + '/' + vote,
+    headers: {
+      Accept: '*/*'
+    },
+    contentType: 'application/json',
+    dataType: 'json'
+  });
+};
+
+var removeInlineEditor = function removeInlineEditor() {
+  if (!lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isNull(inlinemde)) {
+    inlinemde.toTextArea();
+    inlinemde = null;
+  }
+
+  if (!lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isNull(inlinemdeContainer)) {
+    inlinemdeContainer.remove();
+    inlinemdeContainer = null;
+  }
+};
+
+var renderInlineReply = function renderInlineReply(element, parent) {
+  removeInlineEditor();
+  inlinemdeContainer = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div></div>');
+  var editorElement = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<textarea></textarea>');
+  inlinemdeContainer.append(editorElement);
+  var submit = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<button class="m-button primary comment-editor-submit">Submit</button>');
+  var close = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<button class="m-button comment-editor-clear">Close</button>');
+  var toolbar = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div style="text-align: right; padding-top: 4px;"></div>');
+  toolbar.append(submit).append(close);
+  inlinemdeContainer.append(toolbar);
+  element.append(inlinemdeContainer);
+  inlinemde = new simplemde__WEBPACK_IMPORTED_MODULE_2___default.a({
+    element: editorElement.get(0),
+    status: false,
+    toolbar: false
+  });
+  submit.on('click', function () {
+    var value = inlinemde.value();
+
+    if (!lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isEmpty(value)) {
+      submitComment(value, element, lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(parent, 'id')).done(function () {
+        return removeInlineEditor();
+      });
+    }
+  });
+  close.on('click', function () {
+    return removeInlineEditor();
+  });
+};
+
+var deleteComment = function deleteComment(element, item) {
+  jquery__WEBPACK_IMPORTED_MODULE_1___default.a.ajax({
+    method: 'DELETE',
+    url: host + '/id/' + lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'id'),
+    contentType: 'application/json',
+    dataType: 'json'
+  }).done(function () {
+    return element.remove();
+  });
+};
+
+var renderComment = function renderComment(element, item) {
+  var placeHolder = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div class="comment-placeholder"></div>');
+  var avatar = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div class="comment-avatar"></div>');
+  var emailHash = md5__WEBPACK_IMPORTED_MODULE_5___default()(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.toLower(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.trim(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(postContext, 'member.email'))));
+  avatar.append('<img src="https://www.gravatar.com/avatar/' + emailHash + '?s=64&d=identicon&r=g"/>');
+  placeHolder.append(avatar);
+  var stack = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div class="comment-stack"></div>'); // show author and edit time
+
+  var status = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div class="comment-status"></div>');
+
+  var author = lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'author');
+
+  status.append('<span class="comment-author">' + (lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isEmpty(author) ? 'Anonymous' : author) + '</span>');
+  var date = new Date(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'created') * 1000);
+  status.append('<span class="comment-modified">' + Object(timeago_js__WEBPACK_IMPORTED_MODULE_4__["format"])(date, document.documentElement.lang) + '</span>');
+  stack.append(status); // show comment content
+
+  var content = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div class="comment-content"></div>');
+  content.append(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'text'));
+  stack.append(content);
+  var toolbar = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div class="comment-toolbar"></div>');
+  var like = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<a href="#" class="comment-like icon-cool"/>');
+  like.on('click', function () {
+    voteComment(item, 'like').done(function (votes) {
+      like.find('.comment-likes').html(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(votes, 'likes', 0));
+    });
+    return false;
+  });
+  toolbar.append(like);
+  toolbar.append('<span class="comment-likes">' + lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'likes', 0) + '</span>');
+  var dislike = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<a href="#" class="comment-dislike icon-tongue"/>');
+  dislike.on('click', function () {
+    voteComment(item, 'dislike').done(function (votes) {
+      like.find('.comment-dislikes').html(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(votes, 'dislikes', 0));
+    });
+    return false;
+  });
+  toolbar.append(dislike);
+  toolbar.append('<span class="comment-dislikes">' + lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'dislikes', 0) + '</span>');
+  stack.append(toolbar);
+  var childPlaceholder = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<div class="inline-reply"></div>');
+  stack.append(childPlaceholder);
+
+  if (!lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isEmpty(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(postContext, 'member'))) {
+    var reply = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<a href="#" class="comment-action">Reply</a>');
+    toolbar.append(reply);
+    reply.on('click', function () {
+      renderInlineReply(childPlaceholder, item);
+      return false;
+    });
+  }
+
+  if (lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isEqual(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(postContext, 'member.email'), lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'email'))) {
+    var del = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<a href="#" class="comment-action">Delete</a>');
+    toolbar.append(del);
+    del.on('click', function () {
+      deleteComment(placeHolder, item);
+      return false;
+    });
+  }
+
+  placeHolder.append(stack);
+  element.append(placeHolder);
+  return childPlaceholder;
+};
+
+var renderBlockComments = function renderBlockComments(element, items) {
+  if (lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isEmpty(items)) {
+    return;
+  }
+
+  var ul = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<ul class="comment-block"></ul>');
+
+  lodash__WEBPACK_IMPORTED_MODULE_6___default.a.forEach(items, function (item) {
+    var itemId = lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'id');
+
+    var li = jquery__WEBPACK_IMPORTED_MODULE_1___default()('<li class="comment-item"></li>');
+    var childPlaceholder = renderComment(li, item);
+    renderBlockComments(childPlaceholder, lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(item, 'replies'));
+    ul.append(li);
+  });
+
+  element.append(ul);
+};
+
+var renderComments = function renderComments(comments) {
+  if (lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isEmpty(comments)) {
+    jquery__WEBPACK_IMPORTED_MODULE_1___default()('#isso-comments').append('<h3>No comments</h3>');
+    return;
+  }
+
+  renderBlockComments(jquery__WEBPACK_IMPORTED_MODULE_1___default()('#isso-comments').first(), comments);
+};
+
+var loadComments = function loadComments() {
+  jquery__WEBPACK_IMPORTED_MODULE_1___default.a.ajax(host + '/?uri=' + encodeURIComponent(postContext.url)).done(function (data) {
+    var all = lodash__WEBPACK_IMPORTED_MODULE_6___default.a.groupBy(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(data, 'replies'), 'website');
+
+    renderComments(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(all, 'null'));
+    renderVotes(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(all, 'tenolife'));
+  }).fail(function () {
+    renderComments([]);
+    renderVotes([]);
+  });
+};
+
+var submitComment = function submitComment(text, renderToElement, parent) {
+  var payload = {
+    author: lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(postContext, 'member.name'),
+    email: lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(postContext, 'member.email'),
+    title: lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(postContext, 'title'),
+    parent: parent,
+    mode: 1,
+    text: text
+  };
+  return jquery__WEBPACK_IMPORTED_MODULE_1___default.a.ajax({
+    type: 'POST',
+    url: host + '/new?uri=' + encodeURIComponent(postContext.url),
+    data: JSON.stringify(payload),
+    contentType: 'application/json',
+    dataType: 'json'
+  }).done(function (item) {
+    return renderBlockComments(renderToElement, [item]);
+  });
+};
+
+var initMardownEditor = function initMardownEditor() {
+  if (lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isNull(lodash__WEBPACK_IMPORTED_MODULE_6___default.a.get(postContext, 'member'))) {
+    return;
+  }
+
+  simplemde = new simplemde__WEBPACK_IMPORTED_MODULE_2___default.a({
+    element: jquery__WEBPACK_IMPORTED_MODULE_1___default()('.comment-editor').get(0),
+    status: false
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('.comment-editor-submit').on('click', function () {
+    var value = simplemde.value();
+
+    if (!lodash__WEBPACK_IMPORTED_MODULE_6___default.a.isEmpty(value)) {
+      submitComment(value, jquery__WEBPACK_IMPORTED_MODULE_1___default()('#isso-comments').first()).done(function () {
+        simplemde.value("");
+      });
+    }
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('.comment-editor-clear').on('click', function () {
+    simplemde.value("");
+  });
+};
+
+jquery__WEBPACK_IMPORTED_MODULE_1___default()(function () {
+  Object(timeago_js__WEBPACK_IMPORTED_MODULE_4__["register"])('vi', timeago_js_lib_lang_vi__WEBPACK_IMPORTED_MODULE_3___default.a);
+  initMardownEditor();
+  loadComments();
+});
+
+/***/ }),
+
+/***/ 5:
+/*!**********************************!*\
+  !*** multi ./js/isso-comment.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! /Users/camhoang/Workplace/liebling/src/js/isso-comment.js */"./js/isso-comment.js");
+
+
+/***/ }),
+
+/***/ 6:
+/*!********************!*\
+  !*** fs (ignored) ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ })
+
+},[[5,"/js/manifest","/js/vendor"]]]);

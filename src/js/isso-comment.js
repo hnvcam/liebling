@@ -182,7 +182,7 @@ const renderBlockComments = (element, items) => {
 
 const renderComments = comments => {
     if (_.isEmpty(comments)) {
-        $('#isso-comments').append('<h3>No comments</h3>')
+        $('#isso-comments').append('<h3 id="isso-no-comment">No comments</h3>')
         return
     }
     renderBlockComments($('#isso-comments').first(), comments)
@@ -219,7 +219,10 @@ const submitComment = (text, renderToElement, parent) => {
             withCredentials: true
         }
     })
-    .done(item => renderBlockComments(renderToElement, [item]))
+    .done(item => {
+        renderBlockComments(renderToElement, [item])
+        $('#isso-no-comment').remove()
+    })
     .always((res,code,jqXHr) => storeCookies(jqXHr))
 }
 
